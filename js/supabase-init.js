@@ -13,8 +13,8 @@
 // =======================================================================
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL = "sb_publishable_ZCbxRBVZ8RO85KbijDcPbA_UVvWI4l_";
-const SUPABASE_ANON_KEY = "sb_secret_-oRo5aeZVAvLpYUrgrM7Ew_uAqWqkSZ";
+const SUPABASE_URL = "https://vefvbcxpstnfkxpvbafi.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ZCbxRBVZ8RO85KbijDcPbA_UVvWI4l_";
 
 let ready = false;
 let supabase = null;

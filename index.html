@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I.E.M. Montessori — Pitalito</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<header>
+  <a href="#inicio" class="brand" onclick="goTo('inicio')" title="Ir a Inicio">
+    <img id="escudoNav" src="assets/logo.png" alt="Escudo del colegio — presiona para acceder a Administración" onclick="handleShieldClick(event)" title="Mantén presionado para Administración">
+    <div class="brand-text">
+      <div class="name" id="brandName">I.E.M. Montessori</div>
+      <div class="sub">Pitalito · Huila · 2004</div>
+    </div>
+  </a>
+  <nav id="mainNav">
+    <a class="nav-link" data-target="inicio" onclick="goTo('inicio')">Inicio</a>
+    <a class="nav-link" data-target="coordinacion" onclick="goTo('coordinacion')">Coordinación</a>
+    <a class="nav-link" data-target="docentes" onclick="goTo('docentes')">Docentes</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Sonido">🔊</button>
+    <button class="hamburger" onclick="toggleNav()">☰</button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= INICIO ================= -->
+  <section class="section active" id="sec-inicio">
+    <div class="hero">
+      <div class="rays"></div>
+      <div class="hero-content">
+        <div class="eyebrow">✦ Ciencia · Desarrollo · Arte</div>
+        <img class="hero-shield" src="assets/logo.png" alt="Escudo Institución Educativa Municipal Montessori">
+        <h1 id="heroTitle">Institución Educativa Municipal <span>Montessori</span></h1>
+        <p class="lead" id="heroWelcome">¡Bienvenidos a nuestra comunidad educativa! Aquí acompañamos a niñas, niños y jóvenes de Pitalito en un camino de ciencia, desarrollo y arte, con puertas abiertas para toda la familia Montessori.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" onclick="goTo('coordinacion')">Ir a Coordinación</a>
+          <a class="btn btn-secondary" onclick="goTo('docentes')">Ver Docentes</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stripe">
+      <div class="stat"><div class="num">2004</div><div class="lbl">Año de fundación</div></div>
+      <div class="stat"><div class="num">Pitalito</div><div class="lbl">Huila, Colombia</div></div>
+    </div>
+
+    <div class="quote-box">
+      <span class="quote-mark">“</span>
+      <p>El estudio es la base para lograr los sueños, porque cada aprendizaje nos acerca a nuestras metas y nos prepara para construir un futuro lleno de oportunidades, esfuerzo y grandes logros.</p>
+    </div>
+
+    <div id="bioSection" style="display:none;">
+      <div class="section-head" style="padding-top:10px;">
+        <div class="eyebrow">Nuestra historia</div>
+        <h2>Personajes que inspiran nuestro camino</h2>
+      </div>
+      <div class="bio-grid" id="bioGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= COORDINACIÓN ================= -->
+  <section class="section" id="sec-coordinacion">
+    <div class="section-head">
+      <div class="eyebrow">Coordinación</div>
+      <h2>Solicitar turno</h2>
+      <p>Completa el formulario para agendar tu cita con Coordinación. Recibirás la confirmación con fecha, hora y número de turno.</p>
+    </div>
+
+    <div class="coord-login-bar">
+      <button class="btn-outline" onclick="openCoordLogin()">🔒 Entrar como Coordinación</button>
+      <button class="btn-outline" onclick="openConsultarTurno()">🔍 Consultar mi turno</button>
+    </div>
+
+    <div class="turno-wrap">
+      <!-- Formulario -->
+      <div class="turno-card" id="turnoFormCard">
+        <div class="turno-card-title">🗓️ Solicitar turno</div>
+
+        <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px;">📅 Calendario de disponibilidad</label>
+        <div class="mini-calendar" id="calCoordinacion"></div>
+
+        <div class="field">
+          <label>Nombre completo</label>
+          <input type="text" id="tfNombre" placeholder="Escribe tu nombre completo">
+        </div>
+        <div class="field">
+          <label>Tipo de usuario</label>
+          <select id="tfTipo" onchange="onTipoChange()">
+            <option value="Estudiante">Estudiante</option>
+            <option value="Padre/madre/acudiente">Padre / madre / acudiente</option>
+            <option value="Docente">Docente</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="field" id="tfCursoWrap">
+          <label>Curso o grado (si aplica)</label>
+          <select id="tfCurso"><option value="">No aplica</option></select>
+        </div>
+        <div class="field">
+          <label>Motivo de la cita</label>
+          <select id="tfMotivo"></select>
+        </div>
+        <div class="field">
+          <label>Fecha que desea</label>
+          <input type="date" id="tfFecha" onchange="refreshHoraOptions(); renderCalendar('calCoordinacion', calCoordState, coordSlotFilter, 'tfFecha')">
+        </div>
+        <div class="field">
+          <label>Hora disponible</label>
+          <select id="tfHora"><option value="">Selecciona una fecha primero</option></select>
+        </div>
+        <div class="error-msg" id="tfError">Por favor completa todos los campos obligatorios.</div>
+        <button class="btn btn-primary btn-block" onclick="submitTurno()">🎟️ Solicitar turno</button>
+      </div>
+
+      <!-- Confirmación -->
+      <div class="turno-card turno-confirm" id="turnoConfirmCard" style="display:none;">
+        <div class="confirm-icon">✅</div>
+        <div class="turno-card-title" style="text-align:center;">Turno solicitado correctamente</div>
+        <div class="confirm-row"><span>Código</span><b id="confCodigo">—</b></div>
+        <div class="confirm-row"><span>Fecha</span><b id="confFecha">—</b></div>
+        <div class="confirm-row"><span>Hora</span><b id="confHora">—</b></div>
+        <div class="confirm-row confirm-num"><span>Número de turno</span><b id="confNumero">—</b></div>
+        <p class="modal-sub" style="text-align:center; margin-top:10px;">Guarda tu código: te servirá para consultar el estado de tu solicitud en "🔍 Consultar mi turno".</p>
+        <button class="btn-outline btn-block" onclick="resetTurnoForm()">Solicitar otro turno</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DOCENTES ================= -->
+  <section class="section" id="sec-docentes">
+    <div class="section-head">
+      <div class="eyebrow">Docentes</div>
+      <h2>Nuestro equipo docente</h2>
+      <p>Selecciona un docente para ver su horario y solicitar una cita, o consulta sus turnos con tu acceso propio.</p>
+    </div>
+    <div class="coord-login-bar">
+      <button class="btn-outline" onclick="openDocenteLogin()">🔒 Acceso Docentes</button>
+      <button class="btn-outline" onclick="openConsultarTurno()">🔍 Consultar mi cita</button>
+    </div>
+    <div class="teacher-grid" id="teacherGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="fname" id="footerName">Institución Educativa Municipal Montessori</div>
+  <div>Pitalito, Huila — Colombia · Ciencia · Desarrollo · Arte</div>
+  <div id="footerContact" style="margin-top:10px; font-size:12px; color:var(--celeste-soft); display:none;"></div>
+</footer>
+
+<!-- ============ MODAL: Login Administración ============ -->
+<div class="overlay" id="overlayAdminLogin">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayAdminLogin')">✕</button>
+    <h3>🔒 Acceso de Administración</h3>
+    <p class="modal-sub">Ingresa la contraseña de administración general para poder editar todo el contenido del sitio.</p>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="adminPassInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdminPass()">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="checkAdminPass()">Ingresar</button>
+    <div class="error-msg" id="adminError">Contraseña incorrecta. Inténtalo de nuevo.</div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Login Coordinación (turnos) ============ -->
+<div class="overlay" id="overlayCoordLogin">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayCoordLogin')">✕</button>
+    <h3>🔒 Acceso de Coordinación</h3>
+    <p class="modal-sub">Contraseña exclusiva para atender los turnos de padres y estudiantes.</p>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="coordPassInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkCoordPass()">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="checkCoordPass()">Ingresar</button>
+    <div class="error-msg" id="coordError">Contraseña incorrecta. Inténtalo de nuevo.</div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Horario docente ============ -->
+<div class="overlay" id="overlayHorario">
+  <div class="modal wide">
+    <button class="close" onclick="closeOverlay('overlayHorario')">✕</button>
+    <div class="schedule-teacher">
+      <div class="avatar" id="horarioAvatar">--</div>
+      <div>
+        <h3 id="horarioNombre">—</h3>
+        <div class="modal-sub" style="margin-bottom:0;" id="horarioArea">—</div>
+      </div>
+    </div>
+    <div class="estado-row" id="horarioEstado"><span class="dot"></span> <span>—</span></div>
+    <p class="modal-sub">Horario semanal de atención a padres de familia y estudiantes.</p>
+    <table class="schedule">
+      <thead><tr><th>Día</th><th>Horario</th><th>Atención</th></tr></thead>
+      <tbody id="horarioBody"></tbody>
+    </table>
+    <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="openDocenteCitaForm()">📅 Solicitar cita con este docente</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: Editar horario docente (admin) ============ -->
+<div class="overlay" id="overlayEditHorario">
+  <div class="modal wide">
+    <button class="close" onclick="closeOverlay('overlayEditHorario')">✕</button>
+    <h3 id="editHorarioNombre">Editar horario</h3>
+    <p class="modal-sub">Personaliza el horario semanal de atención de este docente. Los cambios se guardan al instante.</p>
+    <div class="mini-list" id="editHorarioList"></div>
+    <button class="btn btn-primary btn-block" onclick="closeOverlay('overlayEditHorario'); toast('Horario actualizado')">Listo</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: Consultar mi turno ============ -->
+<div class="overlay" id="overlayConsultarTurno">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayConsultarTurno')">✕</button>
+    <h3>🔍 Consultar mi turno</h3>
+    <p class="modal-sub">Ingresa el código que recibiste al solicitar tu turno (ej. MT-2026-00001).</p>
+    <div class="field">
+      <label>Código de turno</label>
+      <input type="text" id="consultaCodigo" placeholder="MT-2026-00001" onkeydown="if(event.key==='Enter')buscarTurnoPorCodigo()">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="buscarTurnoPorCodigo()">Buscar</button>
+    <div id="consultaResult"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Acceso Docentes ============ -->
+<div class="overlay" id="overlayDocenteLogin">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayDocenteLogin')">✕</button>
+    <h3>🔒 Acceso Docentes</h3>
+    <p class="modal-sub">Selecciona tu nombre e ingresa tu contraseña personal para ver y gestionar tus citas.</p>
+    <div class="field">
+      <label>Docente</label>
+      <select id="docLoginSelect"></select>
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="docLoginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkDocentePass()">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="checkDocentePass()">Ingresar</button>
+    <div class="error-msg" id="docLoginError">Contraseña incorrecta para el docente seleccionado.</div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Solicitar cita con un docente ============ -->
+<div class="overlay" id="overlayDocenteCita">
+  <div class="modal wide">
+    <button class="close" onclick="closeOverlay('overlayDocenteCita')">✕</button>
+    <h3 id="dcTitulo">Solicitar cita</h3>
+    <p class="modal-sub" id="dcSub">Completa tus datos para agendar con este docente.</p>
+    <div class="mini-calendar" id="calDocente"></div>
+    <div class="field"><label>Nombre completo</label><input type="text" id="dcNombre" placeholder="Escribe tu nombre completo"></div>
+    <div class="field">
+      <label>Tipo de usuario</label>
+      <select id="dcTipo">
+        <option value="Estudiante">Estudiante</option>
+        <option value="Padre/madre/acudiente">Padre / madre / acudiente</option>
+        <option value="Docente">Docente</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div class="field"><label>Curso o grado (si aplica)</label><select id="dcCurso"><option value="">No aplica</option></select></div>
+    <div class="field"><label>Motivo de la cita</label><select id="dcMotivo"></select></div>
+    <div class="field"><label>Fecha que desea</label><input type="date" id="dcFecha" onchange="refreshHoraOptionsDocente(); renderCalendar('calDocente', calDocenteState, ()=>docenteSlotFilter(citaDocenteId), 'dcFecha')"></div>
+    <div class="field"><label>Hora disponible</label><select id="dcHora"><option value="">Selecciona una fecha primero</option></select></div>
+    <div class="error-msg" id="dcError">Por favor completa todos los campos obligatorios.</div>
+    <button class="btn btn-primary btn-block" onclick="submitTurnoDocente()">🎟️ Solicitar cita</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: Cambiar contraseña (admin / autoservicio docente) ============ -->
+<div class="overlay" id="overlayChangePassword">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayChangePassword')">✕</button>
+    <h3 id="cpTitle">Cambiar contraseña</h3>
+    <p class="modal-sub">Elige una nueva contraseña de acceso (mínimo 4 caracteres).</p>
+    <div class="field"><label>Nueva contraseña</label><input type="password" id="cpNew" placeholder="••••••••"></div>
+    <div class="field"><label>Confirmar contraseña</label><input type="password" id="cpConfirm" placeholder="••••••••" onkeydown="if(event.key==='Enter')saveChangedPassword()"></div>
+    <div class="error-msg" id="cpError">Error</div>
+    <button class="btn btn-primary btn-block" onclick="saveChangedPassword()">Guardar contraseña</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: Acceso al Historial avanzado (subpestaña oculta de admin) ============ -->
+<div class="overlay" id="overlayAuditGate">
+  <div class="modal">
+    <button class="close" onclick="closeOverlay('overlayAuditGate')">✕</button>
+    <h3>🕵️ Historial avanzado</h3>
+    <p class="modal-sub">Acceso restringido. Ingresa la contraseña especial para consultar el historial de Coordinación y Docentes.</p>
+    <div class="field"><label>Contraseña</label><input type="password" id="auditGatePass" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAuditGatePass()"></div>
+    <button class="btn btn-primary btn-block" onclick="checkAuditGatePass()">Ingresar</button>
+    <div class="error-msg" id="auditGateError">Contraseña incorrecta.</div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Panel de Historial avanzado ============ -->
+<div class="overlay" id="overlayAuditPanel">
+  <div class="modal wide">
+    <button class="close" onclick="closeOverlay('overlayAuditPanel')">✕</button>
+    <h3>🕵️ Historial avanzado</h3>
+    <p class="modal-sub">Registro de acciones realizadas por Coordinación y por cada docente.</p>
+    <div class="filter-row" style="margin-bottom:16px;">
+      <button class="audit-tab-btn active" data-f="coordinador" onclick="setAuditPanelFilter('coordinador')">Coordinador</button>
+      <button class="audit-tab-btn" data-f="docentes" onclick="setAuditPanelFilter('docentes')">Docentes</button>
+      <button class="audit-tab-btn" data-f="todos" onclick="setAuditPanelFilter('todos')">Todos (incluye Admin)</button>
+    </div>
+    <button class="btn-outline btn-block" style="margin-bottom:16px;" onclick="exportAllToExcel()">📥 Descargar TODO en Excel (un solo clic)</button>
+    <div class="audit-list" id="auditPanelList" style="max-height:440px;"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: Editor de texto genérico (bios / pestañas) ============ -->
+<div class="overlay" id="overlayTextEditor">
+  <div class="modal wide">
+    <button class="close" onclick="closeOverlay('overlayTextEditor')">✕</button>
+    <h3 id="textEditorTitle">Editar contenido</h3>
+    <p class="modal-sub" id="textEditorSub"></p>
+    <div class="field"><textarea id="textEditorArea" rows="8" placeholder="Escribe aquí..."></textarea></div>
+    <button class="btn btn-primary btn-block" onclick="saveTextEditor()">Guardar</button>
+  </div>
+</div>
+
+<!-- ============ PANEL: Administración ============ -->
+<div class="admin-panel" id="adminPanel">
+  <h3>⚙️ Panel de Administración</h3>
+  <p class="modal-sub">Edita el contenido general del sitio. Los cambios se guardan en la nube al instante.</p>
+  <div class="coord-status" id="dbStatusBadge" style="margin-bottom:22px; width:100%; justify-content:center;">
+    <span class="dot" id="dbDot"></span> <span id="dbStatusText">Verificando base de datos…</span>
+  </div>
+
+  <div class="admin-block">
+    <h4>🏫 Identidad del colegio</h4>
+    <div class="field"><label>Nombre del colegio</label><input id="editSchoolName" oninput="applyLive()"></div>
+    <div class="field"><label>Mensaje de bienvenida</label><textarea id="editWelcome" rows="4" oninput="applyLive()"></textarea></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>🖼️ Logo del colegio</h4>
+    <div class="field">
+      <label>URL de la imagen (déjalo vacío para usar el escudo original)</label>
+      <input id="editLogoUrl" placeholder="https://..." oninput="applyLogoLive()">
+    </div>
+  </div>
+
+  <div class="admin-block">
+    <h4>📞 Información de contacto</h4>
+    <div class="field"><label>Teléfono</label><input id="editTelefono" oninput="applyContactLive()"></div>
+    <div class="field"><label>Correo electrónico</label><input id="editCorreo" oninput="applyContactLive()"></div>
+    <div class="field"><label>Dirección</label><input id="editDireccion" oninput="applyContactLive()"></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>🎨 Diseño, colores y animaciones</h4>
+    <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px;">Paletas rápidas</label>
+    <div class="preset-row">
+      <button class="btn-outline" onclick="applyPreset('institucional')">Institucional</button>
+      <button class="btn-outline" onclick="applyPreset('oceano')">Azul océano</button>
+      <button class="btn-outline" onclick="applyPreset('pastel')">Pastel suave</button>
+    </div>
+    <div class="field"><label>Azul oscuro (principal)</label><input type="color" id="colNavyDeep" oninput="applyThemeLive()"></div>
+    <div class="field"><label>Celeste</label><input type="color" id="colCeleste" oninput="applyThemeLive()"></div>
+    <div class="field"><label>Dorado</label><input type="color" id="colGold" oninput="applyThemeLive()"></div>
+    <div class="field"><label>Menta pastel</label><input type="color" id="colMint" oninput="applyThemeLive()"></div>
+    <div class="field"><label>Rojo del escudo (acentos)</label><input type="color" id="colRed" oninput="applyThemeLive()"></div>
+    <div class="field"><label>Fondo general</label><input type="color" id="colBg" oninput="applyThemeLive()"></div>
+    <div class="field">
+      <label>Tipografía de títulos</label>
+      <select id="fontDisplaySelect" onchange="applyThemeLive()">
+        <option value="Fraunces">Fraunces (elegante)</option>
+        <option value="Playfair Display">Playfair Display (clásica)</option>
+        <option value="Poppins">Poppins (moderna)</option>
+        <option value="Space Grotesk">Space Grotesk (geométrica)</option>
+        <option value="Merriweather">Merriweather (editorial)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Tipografía de texto</label>
+      <select id="fontBodySelect" onchange="applyThemeLive()">
+        <option value="Manrope">Manrope</option>
+        <option value="Inter">Inter</option>
+        <option value="Nunito">Nunito</option>
+        <option value="Work Sans">Work Sans</option>
+        <option value="Lato">Lato</option>
+      </select>
+    </div>
+    <div class="field" style="display:flex; align-items:center; gap:10px;">
+      <input type="checkbox" id="animToggle" onchange="applyThemeLive()">
+      <label style="margin:0; text-transform:none; font-size:13px;">Activar animaciones y movimiento</label>
+    </div>
+    <button class="btn-outline btn-block" onclick="resetTheme()">↺ Restaurar diseño original</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>🌟 Biografías destacadas (Inicio)</h4>
+    <div class="mini-list" id="adminBioList"></div>
+    <button class="btn-outline btn-block" onclick="addBioPrompt()">+ Agregar biografía</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>📑 Pestañas personalizadas</h4>
+    <div class="mini-list" id="adminTabList"></div>
+    <button class="btn-outline btn-block" onclick="addTabPrompt()">+ Añadir pestaña</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>👩‍🏫 Docentes y horarios</h4>
+    <div class="mini-list" id="adminTeacherList"></div>
+    <button class="btn-outline btn-block" onclick="addTeacherPrompt()">+ Agregar docente</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>🎓 Cursos / Grados</h4>
+    <p class="modal-sub">Estos cursos aparecerán en el formulario de solicitud de turno.</p>
+    <div class="mini-list" id="adminCursosList"></div>
+    <button class="btn-outline btn-block" onclick="addCursoPrompt()">+ Agregar curso</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>🗓️ Configuración de turnos y disponibilidad</h4>
+    <div class="field"><label>Horario de atención — inicio</label><input type="time" id="cfgHoraIni" onchange="applyTurnoConfigLive()"></div>
+    <div class="field"><label>Horario de atención — fin</label><input type="time" id="cfgHoraFin" onchange="applyTurnoConfigLive()"></div>
+    <div class="field"><label>Duración de cada turno (minutos)</label>
+      <select id="cfgDuracion" onchange="applyTurnoConfigLive()">
+        <option value="15">15 minutos</option>
+        <option value="20">20 minutos</option>
+        <option value="30">30 minutos</option>
+        <option value="45">45 minutos</option>
+        <option value="60">60 minutos</option>
+      </select>
+    </div>
+    <div class="field"><label>Máximo de turnos activos por persona</label><input type="number" id="cfgMaxPersona" min="1" max="10" onchange="applyTurnoConfigLive()"></div>
+    <div class="field" style="display:flex; align-items:center; gap:10px;">
+      <input type="checkbox" id="cfgCancelPublica" onchange="applyTurnoConfigLive()">
+      <label style="margin:0; text-transform:none; font-size:13px;">Permitir que el usuario cancele su propio turno desde "Consultar mi turno"</label>
+    </div>
+    <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin:14px 0 8px; text-transform:uppercase; letter-spacing:.5px;">Días de atención</label>
+    <div class="check-grid" id="cfgDiasGrid"></div>
+    <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin:14px 0 8px; text-transform:uppercase; letter-spacing:.5px;">Quiénes pueden solicitar turno</label>
+    <div class="check-grid" id="cfgTiposGrid"></div>
+    <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin:14px 0 8px; text-transform:uppercase; letter-spacing:.5px;">Motivos de cita disponibles</label>
+    <div class="mini-list" id="adminMotivosList"></div>
+    <button class="btn-outline btn-block" onclick="addMotivoPrompt()">+ Agregar motivo</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>📊 Estadísticas</h4>
+    <div class="stats-mini" id="adminStats"></div>
+  </div>
+
+  <div class="admin-block">
+    <h4>📧 Notificaciones por correo (opcional)</h4>
+    <p class="modal-sub">Usa <a href="https://www.emailjs.com" target="_blank" style="color:var(--navy-deep); text-decoration:underline;">EmailJS</a> (gratuito) para avisar por correo cuando se confirme un turno. Ver instrucciones al final del mensaje de Claude.</p>
+    <div class="field"><label>Service ID</label><input id="cfgEmailService" placeholder="service_xxxx" onchange="applyEmailConfigLive()"></div>
+    <div class="field"><label>Template ID</label><input id="cfgEmailTemplate" placeholder="template_xxxx" onchange="applyEmailConfigLive()"></div>
+    <div class="field"><label>Public Key</label><input id="cfgEmailKey" placeholder="public_key_xxxx" onchange="applyEmailConfigLive()"></div>
+    <div class="field" style="display:flex; align-items:center; gap:10px;">
+      <input type="checkbox" id="cfgEmailEnabled" onchange="applyEmailConfigLive()">
+      <label style="margin:0; text-transform:none; font-size:13px;">Activar envío de notificaciones por correo</label>
+    </div>
+  </div>
+
+  <div class="admin-block">
+    <h4>🔑 Contraseñas</h4>
+    <div class="field"><label>Nueva contraseña de Administración</label><input id="editAdminPass" placeholder="Dejar vacío para no cambiar"></div>
+    <div class="field"><label>Nueva contraseña de Coordinación (turnos)</label><input id="editCoordPass" placeholder="Dejar vacío para no cambiar"></div>
+    <button class="btn btn-secondary btn-block" onclick="savePasswords()">Guardar contraseñas</button>
+  </div>
+
+  <div class="admin-block">
+    <h4>🧹 Mantenimiento de turnos</h4>
+    <p class="modal-sub">Elimina turnos atendidos o cancelados de hace más de 30 días para mantener el panel ordenado.</p>
+    <button class="btn-outline btn-block" onclick="limpiarTurnosAntiguos()">Limpiar turnos antiguos</button>
+  </div>
+
+  <button class="btn btn-primary btn-block" onclick="closeAdmin()">Salir del modo administrador</button>
+  <button class="btn-outline btn-block" style="margin-top:10px; opacity:0.55; font-size:12px;" onclick="openAuditGateLogin()">🕵️ Historial avanzado</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ PANTALLA COMPLETA: Panel de Coordinación ============ -->
+<div class="coord-console" id="coordConsole">
+  <div class="console-bg">
+    <div class="c-blob c-blob1"></div>
+    <div class="c-blob c-blob2"></div>
+    <div class="c-blob c-blob3"></div>
+  </div>
+  <div class="console-header">
+    <div class="console-title">
+      <img src="assets/logo.png" alt="Escudo">
+      <div>
+        <div class="ct-name" id="consoleTitleText">Panel de Coordinación</div>
+        <div class="ct-sub" id="consoleToday">Hoy: —</div>
+      </div>
+    </div>
+    <div class="console-clock" id="consoleClock">--:--:--</div>
+    <button class="console-exit" id="consoleChangePassBtn" style="display:none;" onclick="openDocenteChangePassword()">🔑 Mi contraseña</button>
+    <button class="console-exit" onclick="closeCoordConsole()">✕ Salir</button>
+  </div>
+
+  <div class="console-panel-body">
+    <div class="stat-chips">
+      <div class="stat-chip"><span class="sc-num" id="scHoy">0</span><span class="sc-lbl">Hoy</span></div>
+      <div class="stat-chip"><span class="sc-num" id="scPend">0</span><span class="sc-lbl">Pendientes</span></div>
+      <div class="stat-chip"><span class="sc-num" id="scConf">0</span><span class="sc-lbl">Confirmados</span></div>
+      <div class="stat-chip"><span class="sc-num" id="scAten">0</span><span class="sc-lbl">Atendidos</span></div>
+      <div class="stat-chip"><span class="sc-num" id="scCanc">0</span><span class="sc-lbl">Cancelados</span></div>
+    </div>
+
+    <div class="console-filters">
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="hoy" onclick="setTurnoFilter('hoy')">Hoy</button>
+        <button class="filter-btn" data-filter="manana" onclick="setTurnoFilter('manana')">Mañana</button>
+        <button class="filter-btn" data-filter="semana" onclick="setTurnoFilter('semana')">Esta semana</button>
+        <button class="filter-btn" data-filter="todos" onclick="setTurnoFilter('todos')">Todos</button>
+      </div>
+      <input type="text" class="search-input" id="turnoSearch" placeholder="🔎 Buscar por nombre..." oninput="renderCoordPanel()">
+    </div>
+
+    <div class="turno-list" id="turnoList"></div>
+  </div>
+
+  <div class="console-footer">Sesión exclusiva de Coordinación — desde aquí se gestionan los turnos solicitados.</div>
+</div>
+
+<!-- La configuración de la base de datos (Supabase) está en js/supabase-init.js -->
+<script type="module" src="js/supabase-init.js"></script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
